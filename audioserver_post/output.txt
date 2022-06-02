@@ -1,0 +1,68 @@
+wavfile 1: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S01.wav
+<unk> heb je te ontmoeten
+0: {'channel': 1, 'tbeg': 0.02, 'dur': 0.01, 'word': '<unk>', 'score': 0.43}
+1: {'channel': 1, 'tbeg': 0.22, 'dur': 0.21, 'word': 'heb', 'score': 0.88}
+2: {'channel': 1, 'tbeg': 0.43, 'dur': 0.03, 'word': 'je', 'score': 0.94}
+3: {'channel': 1, 'tbeg': 0.46, 'dur': 0.15, 'word': 'te', 'score': 0.9}
+4: {'channel': 1, 'tbeg': 0.61, 'dur': 0.28, 'word': 'ontmoeten', 'score': 0.98}
+wavfile 2: 
+wavfile 2  Does not exist
+wavfile 3: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S02.wav
+hoe gaat 't mensen
+0: {'channel': 1, 'tbeg': 0, 'dur': 0, 'word': 'hoe', 'score': 0.93}
+1: {'channel': 1, 'tbeg': 0, 'dur': 0.21, 'word': 'gaat', 'score': 0.72}
+2: {'channel': 1, 'tbeg': 0.21, 'dur': 0, 'word': "'t", 'score': 0.4}
+3: {'channel': 1, 'tbeg': 0.24, 'dur': 0.15, 'word': 'mensen', 'score': 0.93}
+wavfile 4: 
+wavfile 4  Does not exist
+wavfile 5: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S03_not_exist.wav
+wavfile 5 /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S03_not_exist.wav Does not exist
+wavfile 6: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S04.wav
+ik probeer 't met jou te communiceren via deze
+0: {'channel': 1, 'tbeg': 0, 'dur': 0.24, 'word': 'ik', 'score': 0.96}
+1: {'channel': 1, 'tbeg': 0.24, 'dur': 0.14, 'word': 'probeer', 'score': 1}
+2: {'channel': 1, 'tbeg': 0.38, 'dur': 0.02, 'word': "'t", 'score': 0.92}
+3: {'channel': 1, 'tbeg': 0.4, 'dur': 0.06, 'word': 'met', 'score': 0.99}
+4: {'channel': 1, 'tbeg': 0.46, 'dur': 0.08, 'word': 'jou', 'score': 0.93}
+5: {'channel': 1, 'tbeg': 0.54, 'dur': 0.04, 'word': 'te', 'score': 0.97}
+6: {'channel': 1, 'tbeg': 0.58, 'dur': 0.21, 'word': 'communiceren', 'score': 0.97}
+7: {'channel': 1, 'tbeg': 0.79, 'dur': 0.1, 'word': 'via', 'score': 0.94}
+8: {'channel': 1, 'tbeg': 0.89, 'dur': 0.08, 'word': 'deze', 'score': 0.94}
+wavfile 7: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S05.wav
+hoe kan ik je helpen
+0: {'channel': 1, 'tbeg': 0, 'dur': 0.27, 'word': 'hoe', 'score': 1}
+1: {'channel': 1, 'tbeg': 0.27, 'dur': 0.04, 'word': 'kan', 'score': 1}
+2: {'channel': 1, 'tbeg': 0.31, 'dur': 0.03, 'word': 'ik', 'score': 1}
+3: {'channel': 1, 'tbeg': 0.34, 'dur': 0.04, 'word': 'je', 'score': 0.88}
+4: {'channel': 1, 'tbeg': 0.39, 'dur': 0.34, 'word': 'helpen', 'score': 0.8}
+wavfile 8: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S06_not_exist.wav
+wavfile 8 /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S06_not_exist.wav Does not exist
+wavfile 9: 
+wavfile 9  Does not exist
+wavfile 10: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S07.wav
+wanneer is de gegaan
+0: {'channel': 1, 'tbeg': 0, 'dur': 0.23, 'word': 'wanneer', 'score': 1}
+1: {'channel': 1, 'tbeg': 0.23, 'dur': 0.05, 'word': 'is', 'score': 0.94}
+2: {'channel': 1, 'tbeg': 0.28, 'dur': 0.05, 'word': 'de', 'score': 0.67}
+3: {'channel': 1, 'tbeg': 0.33, 'dur': 0.18, 'word': 'gegaan', 'score': 0.95}
+wavfile 11: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S08.wav
+zo ik weet het uitleggen
+0: {'channel': 1, 'tbeg': 0, 'dur': 0.29, 'word': 'zo', 'score': 1}
+1: {'channel': 1, 'tbeg': 0.29, 'dur': 0.02, 'word': 'ik', 'score': 1}
+2: {'channel': 1, 'tbeg': 0.31, 'dur': 0.04, 'word': 'weet', 'score': 0.99}
+3: {'channel': 1, 'tbeg': 0.35, 'dur': 0.06, 'word': 'het', 'score': 0.53}
+4: {'channel': 1, 'tbeg': 0.41, 'dur': 0.58, 'word': 'uitleggen', 'score': 0.92}
+wavfile 12: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S09.wav
+dank je wel iets heel erg interessant
+0: {'channel': 1, 'tbeg': 0, 'dur': 0.49, 'word': 'dank', 'score': 1}
+1: {'channel': 1, 'tbeg': 0.49, 'dur': 0.04, 'word': 'je', 'score': 1}
+2: {'channel': 1, 'tbeg': 0.53, 'dur': 0.05, 'word': 'wel', 'score': 1}
+3: {'channel': 1, 'tbeg': 0.58, 'dur': 0.06, 'word': 'iets', 'score': 0.82}
+4: {'channel': 1, 'tbeg': 0.68, 'dur': 0.12, 'word': 'heel', 'score': 1}
+5: {'channel': 1, 'tbeg': 0.8, 'dur': 0.04, 'word': 'erg', 'score': 1}
+6: {'channel': 1, 'tbeg': 0.84, 'dur': 0.48, 'word': 'interessant', 'score': 1}
+wavfile 13: /vol/tensusers4/aparikh/SignOn/SignON_audio/Dutch_Louis/SignOnWavs_NL/S10.wav
+een fijne dag
+0: {'channel': 1, 'tbeg': 0.16, 'dur': 0.26, 'word': 'een', 'score': 0.7}
+1: {'channel': 1, 'tbeg': 0.43, 'dur': 0.2, 'word': 'fijne', 'score': 0.99}
+2: {'channel': 1, 'tbeg': 0.63, 'dur': 0.1, 'word': 'dag', 'score': 1}
