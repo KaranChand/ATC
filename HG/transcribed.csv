@@ -1,0 +1,7 @@
+transcription,recording_id,audio,model_transcription
+~p ~s ~a eight one zero turn right to trasadingen ,011_0001,"{'array': array([-0.00550002, -0.00727985, -0.00491476, ...,  0.00072004,
+       -0.00845804,  0.        ], dtype=float32), 'path': 'atcosim/WAVdata/sm1/sm1_01/sm1_01_001.wav', 'sampling_rate': 16000}",BUTS O HE'D WON SIVL TON OF RIGHT TO TROSITING AND
+lufthansa five three one eight contact zurich one three four decimal six ,011_0002,"{'array': array([ 0.00044273, -0.00702992, -0.00636773, ...,  0.00245428,
+       -0.00665607, -0.00545715], dtype=float32), 'path': 'atcosim/WAVdata/sm1/sm1_01/sm1_01_002.wav', 'sampling_rate': 16000}",LOFE TENS A FIVE THREE ONE EIGHT CONTECTSERI ONE THREE FOUR DESEMO SIX
+~p ~s ~a eight one zero contact zurich one three three decimal four ,011_0003,"{'array': array([-0.00604086, -0.01317697, -0.00541105, ..., -0.00041901,
+       -0.01213968,  0.        ], dtype=float32), 'path': 'atcosim/WAVdata/sm1/sm1_01/sm1_01_003.wav', 'sampling_rate': 16000}",BESIDE ONE ZERO CONTECT ZERIS ONE TREE TREE DESMAL FOUR

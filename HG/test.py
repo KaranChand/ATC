@@ -8,14 +8,54 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
 import numpy as np
+import pickle
+import pandas as pd
 
-atcosim = load_dataset('csv', data_files="newdata.csv", split="train")
+torch.cuda.empty_cache()
+# define pipeline
+# model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
+# processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
+model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
+processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
 
-# make a vocabulary
-def extract_all_chars(batch):
-  all_text = " ".join(batch["transcription"])
-  vocab = list(set(all_text))
-  return {"vocab": [vocab], "all_text": [all_text]}
+device = "cuda:0" if torch.cuda.is_available() else "cpu"
+model.to(device)
+
+# loading and preprocessing of data
+atcosim = load_dataset('csv', data_files='newdata.csv', split='train')
+atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
+
+def prepare_dataset(x):
+  input_values = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"]).input_values[0]
+  input_dict = processor(input_values, return_tensors="pt", padding=True).to(device)
+  logits = model(input_dict.input_values).logits
+  pred_id = torch.argmax(logits, dim=-1)[0]
+  x['model_transcription'] = processor.decode(pred_id)
+  return x
+
+atcosim = atcosim.map(prepare_dataset)
+atcosim.to_csv("transcribed_base.csv", index = False, header=True)
+
+
+
+
+
+
+
+
+
+
+
+
+# with open('input_values.pkl', 'rb') as f:
+#     input_values = pickle.load(f)
+
+# # make a vocabulary
+# def extract_all_chars(batch):
+#   all_text = " ".join(batch["transcription"])
+#   vocab = list(set(all_text))
+#   return {"vocab": [vocab], "all_text": [all_text]}
+
 
 # vocab = atcosim.map(extract_all_chars, batched=True, batch_size=-1, keep_in_memory=True, remove_columns=atcosim.column_names)
 # vocab_list = list(set(vocab["vocab"][0]))
@@ -27,20 +67,21 @@ def extract_all_chars(batch):
 # with open('vocab.json', 'w') as vocab_file:
 #     json.dump(vocab_dict, vocab_file)
 
-tokenizer = Wav2Vec2CTCTokenizer.from_pretrained("./", unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
-feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=True, return_attention_mask=True)
-processor = Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer)
+# tokenizer = Wav2Vec2CTCTokenizer.from_pretrained("./", unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
+# feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=True, return_attention_mask=True)
+# processor = Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer).to("cuda")
 
-atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16_000))
-model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
-processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
+# atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16_000))
+# model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
+# processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
 
 # Listen to random audio data
 # from playsound import playsound
 
 # rand_int = random.randint(0, len(atcosim)-1)
-# playsound(atcosim[rand_int]["audio"]["path"])
 # print(atcosim[rand_int]["transcription"])
+# playsound(atcosim[rand_int]["audio"]["path"])
+
 
 # test if data is processed correctly
 # rand_int = random.randint(0, len(atcosim)-1)
@@ -49,25 +90,31 @@ processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
 # print("Input array shape:", atcosim[rand_int]["audio"]["array"].shape)
 # print("Sampling rate:", atcosim[rand_int]["audio"]["sampling_rate"])
 
-def prepare_dataset(batch):
-    audio = batch["audio"]
+# def prepare_dataset(batch):
+#     audio = batch["audio"]
 
-    # batched output is "un-batched"
-    batch["input_values"] = processor(audio["array"], sampling_rate=audio["sampling_rate"]).input_values[0]
-    batch["input_length"] = len(batch["input_values"])
+#     # batched output is "un-batched"
+#     batch["input_values"] = processor(audio["array"], sampling_rate=audio["sampling_rate"]).input_values[0]
+#     batch["input_length"] = len(batch["input_values"])
     
-    with processor.as_target_processor():
-        batch["labels"] = processor(batch["transcription"]).input_ids
-    return batch
+#     with processor.as_target_processor():
+#         batch["labels"] = processor(batch["transcription"]).input_ids
+#     return batch
+
+# processor(atcosim[0]['audio']["array"], sampling_rate=atcosim[0]['audio']["sampling_rate"]).input_values[0]
+# atcosim["labels"] = processor(atcosim["transcription"]).input_ids
+# with processor.as_target_processor():
+#     atcosim["input_length"] = len(atcosim["input_values"])
+
 
 # split data in train and test
-train_perc = 0.95
-train_indices = random.sample(range(0, len(atcosim)-1), round(len(atcosim) * train_perc))
-test_indices = set(range(0,len(atcosim)-1)) - set(train_indices) 
-train = atcosim[train_indices]
-test = atcosim[test_indices]
+# test_perc = 0.05
+# test_indices = random.sample(range(0, len(atcosim)-1), round(len(atcosim) * test_perc))
+# train_indices = set(range(0,len(atcosim)-1)) - set(test_indices) 
+# train = atcosim[train_indices]
+# test = atcosim[test_indices]
 
-atcosim = atcosim.map(prepare_dataset, remove_columns=atcosim.column_names)
+# atcosim = atcosim.map(prepare_dataset, num_proc=4)
 
 # @dataclass
 # class DataCollatorCTCWithPadding:
@@ -178,14 +225,14 @@ atcosim = atcosim.map(prepare_dataset, remove_columns=atcosim.column_names)
 
 # trainer.train()
 
-input_dict = processor(atcosim[0]["input_values"], return_tensors="pt", padding=True)
+# input_dict = processor(atcosim[0]["input_values"], return_tensors="pt", padding=True)
 
-logits = model(input_dict.input_values.to("cuda")).logits
+# logits = model(input_dict.input_values.to("cuda")).logits
 
-pred_ids = torch.argmax(logits, dim=-1)[0]
+# pred_ids = torch.argmax(logits, dim=-1)[0]
 
-print("Prediction:")
-print(processor.decode(pred_ids))
+# print("Prediction:")
+# print(processor.decode(pred_ids))
 
-print("\nReference:")
-print(atcosim[0]["transcription"].lower())
+# print("\nReference:")
+# print(atcosim[0]["transcription"].lower())
