@@ -1,9 +1,6 @@
 from transformers import AutoModelForCTC, Wav2Vec2Processor
-from datasets import Audio, load_dataset, load_metric
+from datasets import Audio, load_dataset
 import torch
-from jiwer import wer
-import numpy as np
-import pandas as pd
 
 torch.cuda.empty_cache()
 # define pipeline

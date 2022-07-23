@@ -1,15 +1,21 @@
 from evaluate import load
 from datasets import load_dataset
 import pandas as pd 
-from pathlib import Path 
+from pathlib import Path
+import numpy as np
 
 filename = "transcribed_base"
 # remove rows that have NaN as model_transcription for model evaluation
-# files = ['transcribed_base', 'transcribed_robust']
+files = ['transcribed_base', 'transcribed_robust']
+dirty_indices = set()
+for f in files:
+        df = pd.read_csv("output/" + f+".csv")
+        dirty_indices.update(df.loc[pd.isna(df["model_transcription"]), :].index.values)
+
 df = pd.read_csv("output/" + filename+".csv") 
-clean_df = df.dropna(subset=['model_transcription'])
+clean_df = df.drop(dirty_indices)
 clean_df.to_csv(Path("data/clean_newdata.csv"), index = False, header=True)
-print("removed %x model_transcriptions that contain NaN" % (len(df) - len(clean_df)))
+print(f"removed {len(dirty_indices)} model_transcriptions that contain NaN")
 
 # load as dataset
 ds = load_dataset('csv', data_files='data/clean_newdata.csv', split='train')
@@ -42,4 +48,4 @@ df = pd.read_csv("output/metrics.csv")
 df.set_index('filename', inplace= True)
 df.loc[filename + '.csv'] = metrics
 df.reset_index(inplace=True)
-df.to_csv(Path("output/metrics.csv"), index = False, header=True)
+df.to_csv(Path("output/metrics.csv"), index = False, header=True, float_format='%.5f')
