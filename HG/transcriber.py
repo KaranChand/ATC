@@ -16,7 +16,7 @@ device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
 # loading and preprocessing of data
-atcosim = load_dataset('csv', data_files='newdata.csv', split='train')
+atcosim = load_dataset('csv', data_files='data/newdata.csv', split='train')
 atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
 
 def prepare_dataset(x):
@@ -28,7 +28,7 @@ def prepare_dataset(x):
   return x
 
 atcosim = atcosim.map(prepare_dataset)
-atcosim.to_csv("transcribed_base.csv", index = False, header=True)
+atcosim.to_csv("data/transcribed_base.csv", index = False, header=True)
 
 
 

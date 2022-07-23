@@ -1,3 +1,0 @@
-filename,perplexity,wer,cer
-transcribed_base.csv,167.47559,1.05429,0.90286
-transcribed_robust.csv,167.15219,1.12563,0.89727
