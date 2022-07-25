@@ -25,7 +25,9 @@ def prepare_dataset(x):
   return x
 
 atcosim = atcosim.map(prepare_dataset)
-atcosim.to_csv("data/transcribed_base.csv", index = False, header=True)
+import pickle
+pickle.dump(atcosim, open("output/transcribed_base.p", "wb"))
+atcosim.to_csv("output/transcribed_base.csv", index = False, header=True)
 
 
 
