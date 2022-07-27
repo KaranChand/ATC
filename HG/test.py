@@ -22,8 +22,10 @@ model.to(device)
 # atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
 
 def prepare_dataset(x):
-  input_values = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"], return_tensors="pt", padding=True).to(device)
-  logits = model(input_values.input_values).logits
+  x['input_values'] = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"], return_tensors="pt", padding=True).input_values[0]
+  logits = model(x['input_values']).logits
+  with processor.as_target_processor():
+        x["labels"] = processor(x["transcription"]).input_ids
   pred_id = torch.argmax(logits, dim=-1)[0]
   x['model_transcription'] = processor.decode(pred_id)
   return x
