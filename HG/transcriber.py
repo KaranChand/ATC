@@ -6,8 +6,11 @@ torch.cuda.empty_cache()
 # define pipeline
 # model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
 # processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
-model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
-processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
+filename = "transcribed_hubert"
+# model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
+# processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
+model = AutoModelForCTC.from_pretrained("facebook/hubert-large-ls960-ft")
+processor = Wav2Vec2Processor.from_pretrained("facebook/hubert-large-ls960-ft")
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
@@ -17,8 +20,10 @@ atcosim = load_dataset('csv', data_files='data/newdata.csv', split='train')
 atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
 
 def prepare_dataset(x):
-  input_values = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"]).input_values[0]
-  input_dict = processor(input_values, return_tensors="pt", padding=True).to(device)
+  x['input_values'] = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"]).input_values[0]
+  input_dict = processor(x['input_values'], return_tensors="pt", padding=True).to(device)
+  with processor.as_target_processor():
+        x["labels"] = processor(x["transcription"]).input_ids
   logits = model(input_dict.input_values).logits
   pred_id = torch.argmax(logits, dim=-1)[0]
   x['model_transcription'] = processor.decode(pred_id)
@@ -26,8 +31,8 @@ def prepare_dataset(x):
 
 atcosim = atcosim.map(prepare_dataset)
 import pickle
-pickle.dump(atcosim, open("output/transcribed_base.p", "wb"))
-atcosim.to_csv("output/transcribed_base.csv", index = False, header=True)
+pickle.dump(atcosim, open("output/"+filename+".p", "wb"))
+atcosim.to_csv("output/"+filename+".csv", index = False, header=True)
 
 
 

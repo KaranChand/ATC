@@ -1,12 +1,10 @@
-from evaluate import load
-from datasets import load_dataset
+from datasets import load_dataset, load_metric
 import pandas as pd 
 from pathlib import Path
-import numpy as np
 
-filename = "transcribed_base"
+filename = "transcribed_hubert"
 # remove rows that have NaN as model_transcription for model evaluation
-files = ['transcribed_base', 'transcribed_robust']
+files = ['transcribed_base', 'transcribed_robust', 'transcribed_hubert']
 dirty_indices = set()
 for f in files:
         df = pd.read_csv("output/" + f+".csv")
@@ -23,17 +21,17 @@ predictions = ds['model_transcription']
 references = ds['transcription']
 
 # word error rate
-wer_metric = load("wer")
+wer_metric = load_metric("wer")
 wer = wer_metric.compute(predictions=predictions, references=references)
 
 # perplexity
-perplexity = load("perplexity", module_type="metric")
+perplexity = load_metric("perplexity", module_type="metric")
 input_texts = references
 results = perplexity.compute(model_id='gpt2',
                              input_texts=input_texts)
 
 # Character error rate
-cer_metric = load("cer")
+cer_metric = load_metric("cer")
 cer = cer_metric.compute(predictions=predictions, references=references)
 
 

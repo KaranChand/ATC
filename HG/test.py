@@ -17,15 +17,13 @@ processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
-# loading and preprocessing of data
-# atcosim = load_dataset('csv', data_files='newdata.csv', split='train[:60]')
-# atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
 
 def prepare_dataset(x):
-  x['input_values'] = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"], return_tensors="pt", padding=True).input_values[0]
-  logits = model(x['input_values']).logits
+  x['input_values'] = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"]).input_values[0]
+  input_dict = processor(x['input_values'], return_tensors="pt", padding=True).to(device)
   with processor.as_target_processor():
         x["labels"] = processor(x["transcription"]).input_ids
+  logits = model(input_dict.input_values).logits
   pred_id = torch.argmax(logits, dim=-1)[0]
   x['model_transcription'] = processor.decode(pred_id)
   return x
