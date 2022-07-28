@@ -4,13 +4,14 @@ import torch
 
 torch.cuda.empty_cache()
 # define pipeline
-# model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
-# processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
-filename = "transcribed_hubert"
+model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
+processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
 # model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
 # processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
-model = AutoModelForCTC.from_pretrained("facebook/hubert-large-ls960-ft")
-processor = Wav2Vec2Processor.from_pretrained("facebook/hubert-large-ls960-ft")
+# model = AutoModelForCTC.from_pretrained("facebook/hubert-large-ls960-ft")
+# processor = Wav2Vec2Processor.from_pretrained("facebook/hubert-large-ls960-ft")
+filename = "transcribed_robust"
+
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
@@ -29,7 +30,7 @@ def prepare_dataset(x):
   x['model_transcription'] = processor.decode(pred_id)
   return x
 
-atcosim = atcosim.map(prepare_dataset)
+atcosim = atcosim.map(prepare_dataset, remove_columns='audio')
 import pickle
 pickle.dump(atcosim, open("output/"+filename+".p", "wb"))
 atcosim.to_csv("output/"+filename+".csv", index = False, header=True)

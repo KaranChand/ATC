@@ -7,30 +7,33 @@ import random
 import pandas as pd
 import pickle
 
-atcosim = load_dataset('csv', data_files='data/newdata.csv', split='train[:10]')
-# atcosim = pickle.load(open("output/test.p", "rb" ))
-atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
+atcosim = load_dataset('csv', data_files='output/transcribed_base.csv', split='train')
+print(atcosim[0]['model_transcription'])
 
-# define pipeline
-model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
-processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
+# atcosim = load_dataset('csv', data_files='data/newdata.csv', split='train[:10]')
+# # atcosim = pickle.load(open("output/test.p", "rb" ))
+# atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
 
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
-model.to(device)
+# # define pipeline
+# model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
+# processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
 
-def prepare_dataset(x):
-  x['input_values'] = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"]).input_values[0]
-  input_dict = processor(x['input_values'], return_tensors="pt", padding=True).to(device)
-  with processor.as_target_processor():
-        x["labels"] = processor(x["transcription"]).input_ids
-  logits = model(input_dict.input_values).logits
-  pred_id = torch.argmax(logits, dim=-1)[0]
-  x['model_transcription'] = processor.decode(pred_id)
-  return x
+# device = "cuda:0" if torch.cuda.is_available() else "cpu"
+# model.to(device)
 
-atcosim = atcosim.map(prepare_dataset)
-pickle.dump(atcosim, open("output/test.p", "wb" ))
-atcosim.to_csv("output/testing_transcription.csv", index = False, header=True)
+# def prepare_dataset(x):
+#   x['input_values'] = processor(x['audio']["array"], sampling_rate=x['audio']["sampling_rate"]).input_values[0]
+#   input_dict = processor(x['input_values'], return_tensors="pt", padding=True).to(device)
+#   with processor.as_target_processor():
+#         x["labels"] = processor(x["transcription"]).input_ids
+#   logits = model(input_dict.input_values).logits
+#   pred_id = torch.argmax(logits, dim=-1)[0]
+#   x['model_transcription'] = processor.decode(pred_id)
+#   return x
+
+# atcosim = atcosim.map(prepare_dataset)
+# pickle.dump(atcosim, open("output/test.p", "wb" ))
+# atcosim.to_csv("output/testing_transcription.csv", index = False, header=True)
 
 
 # print(transcription)
