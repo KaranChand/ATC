@@ -2,15 +2,15 @@ from datasets import load_dataset, load_metric
 import pandas as pd 
 from pathlib import Path
 
-filename = "transcribed_hubert"
+filename = "transcribed_base"
 # remove rows that have NaN as model_transcription for model evaluation
 files = ['transcribed_base', 'transcribed_robust', 'transcribed_hubert']
 dirty_indices = set()
 for f in files:
-        df = pd.read_csv("output/" + f+".csv")
+        df = pd.read_json("output/" + f+".json")
         dirty_indices.update(df.loc[pd.isna(df["model_transcription"]), :].index.values)
 
-df = pd.read_csv("output/" + filename+".csv") 
+df = pd.read_json("output/" + filename+".json") 
 clean_df = df.drop(dirty_indices)
 clean_df.to_csv(Path("data/clean_newdata.csv"), index = False, header=True)
 print(f"removed {len(dirty_indices)} model_transcriptions that contain NaN")
@@ -35,7 +35,7 @@ cer_metric = load_metric("cer")
 cer = cer_metric.compute(predictions=predictions, references=references)
 
 
-metrics = {"filename" : filename+ '.csv',
+metrics = {"filename" : filename+ '.json',
            "perplexity" : results['mean_perplexity'],
            "wer" : wer,
            "cer" : cer
