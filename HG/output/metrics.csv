@@ -1,4 +1,4 @@
 filename,perplexity,wer,cer
-transcribed_base.csv,167.55794,1.05419,0.90278
-transcribed_robust.csv,167.55794,1.12547,0.89719
-transcribed_hubert.csv,167.55794,1.03664,0.88513
+transcribed_base.csv,166.96829,1.05434,0.90256
+transcribed_robust.csv,166.96829,1.12581,0.89718
+transcribed_hubert.csv,166.96829,1.03666,0.88497
