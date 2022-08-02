@@ -10,13 +10,13 @@ torch.cuda.empty_cache()
 checkpoint = "facebook/hubert-large-ls960-ft"
 model = AutoModelForCTC.from_pretrained(checkpoint)
 processor = Wav2Vec2Processor.from_pretrained(checkpoint)
-filename = "transcribed_hubert"
+filename = "atcosim_input_validation"
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
 # loading and preprocessing of data
-atcosim = load_from_disk("atcosim_split")['train']
+atcosim = load_from_disk("atcosim_split")['validation']
 atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
 
 def prepare_dataset(x):
@@ -30,6 +30,8 @@ def prepare_dataset(x):
   return x
 
 atcosim = atcosim.map(prepare_dataset, remove_columns='audio')
+
+atcosim.save_to_disk(filename)
 pickle.dump(atcosim, open("output/"+filename+".p", "wb"))
 atcosim = atcosim.remove_columns(['input_values'])
 atcosim.to_csv("output/"+filename+".csv", index = False, header=True)

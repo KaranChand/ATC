@@ -1,3 +1,7 @@
 # data files (too big to push)
 atcosim/
 ffmpeg.exe
+
+wav2vec2-large-robust-ft-25/
+wav2vec2-large-robust-ft-250/
+wav2vec2-large-robust-ft-test/

@@ -11,11 +11,15 @@ from transformers import AutoModelForCTC, Wav2Vec2Processor, AutoProcessor
 from datasets import Audio, load_dataset, load_from_disk
 import torch
 
-atcosim = load_from_disk("atcosim_split")['train']
-# atcosim.to_json("test.json")
-# dataset = load_dataset("json", data_files="test.json")
-atcosim = atcosim.remove_columns('audio')
+# atcosim = load_from_disk("atcosim_split")['train']
+# # atcosim.to_json("test.json")
+# # dataset = load_dataset("json", data_files="test.json")
+# atcosim = atcosim.remove_columns('audio')
+# print(atcosim)
+
+atcosim = load_from_disk("atcosim_split")
 print(atcosim)
+atcosim.push_to_hub("KaranChand/atcosim_split")
 
 # torch.cuda.empty_cache()
 # # define pipeline
