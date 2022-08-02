@@ -19,7 +19,7 @@ model.to(device)
 print(device)
 
 #get data
-atcosim_input_train = load_dataset("KaranChand/atcosim_input", split="train[:25]")
+atcosim_input_train = load_dataset("KaranChand/atcosim_input", split="train[:50]")
 atcosim_input_validation = load_dataset("KaranChand/atcosim_input", split="valid[:50]")
 
 
@@ -89,7 +89,7 @@ def compute_metrics(pred):
     return {"wer": wer}
 
 model = Wav2Vec2ForCTC.from_pretrained(
-    "facebook/wav2vec2-large-robust-ft-swbd-300h", 
+    "facebook/wav2vec2-base-960h", 
     attention_dropout=0.0,
     hidden_dropout=0.0,
     feat_proj_dropout=0.0,
@@ -102,7 +102,7 @@ model = Wav2Vec2ForCTC.from_pretrained(
 
 model.freeze_feature_extractor()
 
-repo_name = "wav2vec2-large-robust-ft-25"
+repo_name = "wav2vec2-base-960h-500"
 
 training_args = TrainingArguments(
   output_dir=repo_name,

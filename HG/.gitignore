@@ -5,3 +5,6 @@ ffmpeg.exe
 wav2vec2-large-robust-ft-25/
 wav2vec2-large-robust-ft-250/
 wav2vec2-large-robust-ft-test/
+wav2vec2-large-robust-ft-25-50e/
+wav2vec2-large-robust-ft-500/
+facebook/
