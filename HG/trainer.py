@@ -12,12 +12,11 @@ from huggingface_hub import notebook_login
 
 torch.cuda.empty_cache()
 # define pipeline
-tokenizer = Wav2Vec2CTCTokenizer.from_pretrained('./', unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
-feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=True, return_attention_mask=True)
-processor = Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer)
+checkpoint = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
+processor = Wav2Vec2Processor.from_pretrained(checkpoint)
 
 #get data
-atcosim_input_train = load_dataset("KaranChand/atcosim_pruned_xlsr", split="train[:150]")
+atcosim_input_train = load_dataset("KaranChand/atcosim_pruned_xlsr", split="train[:50]")
 atcosim_input_validation = load_dataset("KaranChand/atcosim_pruned_xlsr", split="valid[:50]")
 
 
@@ -87,7 +86,7 @@ def compute_metrics(pred):
     return {"wer": wer}
 
 model = Wav2Vec2ForCTC.from_pretrained(
-    "facebook/wav2vec2-xls-r-300m", 
+    checkpoint, 
     attention_dropout=0.0,
     hidden_dropout=0.0,
     feat_proj_dropout=0.0,
@@ -100,7 +99,7 @@ model = Wav2Vec2ForCTC.from_pretrained(
 
 model.freeze_feature_extractor()
 
-repo_name = "wav2vec2-XLSR-ft-150"
+repo_name = "wav2vec2-XLSR-ft-50"
 
 training_args = TrainingArguments(
   output_dir=repo_name,
@@ -108,14 +107,14 @@ training_args = TrainingArguments(
   per_device_train_batch_size=6,
   gradient_accumulation_steps=2,
   evaluation_strategy="steps",
-  num_train_epochs=50,
+  num_train_epochs=30,
   gradient_checkpointing=True,
   fp16=True,
-  save_steps=500,
-  eval_steps=200,
-  logging_steps=200,
+  save_steps=50,
+  eval_steps=250,
+  logging_steps=50,
   learning_rate=3e-4,
-  warmup_steps=200,
+  warmup_steps=100,
   save_total_limit=1,
   push_to_hub=True,
   hub_token = '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'

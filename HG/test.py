@@ -22,26 +22,39 @@ from yaml import load
 #     'test': atcosim_main['test'],
 #     'valid': atcosim_main['validation']})
 # print(atcosim)
-atcosim = load_from_disk("atcosim_pruned_xlsr")
-atcosim.push_to_hub("atcosim_pruned_xlsr", token = "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")
+# atcosim = load_from_disk("atcosim_pruned_xlsr")
+# atcosim.push_to_hub("atcosim_pruned_xlsr", token = "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")
+
+
+
+# make a vocabulary
+# def extract_all_chars(batch):
+#   all_text = " ".join(batch["transcription"])
+#   vocab = list(set(all_text))
+#   return {"vocab": [vocab], "all_text": [all_text]}
+
+# atcosim = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
+# vocab = atcosim.map(extract_all_chars, batched=True, batch_size=-1, keep_in_memory=True, remove_columns=atcosim.column_names)
+# vocab_list = list(set(vocab["vocab"][0]))
+# vocab_dict = {v: k for k, v in enumerate(sorted(vocab_list))}
+# vocab_dict["|"] = vocab_dict[" "]
+# del vocab_dict[" "]
+# vocab_dict["[UNK]"] = len(vocab_dict)
+# vocab_dict["[PAD]"] = len(vocab_dict)
+# with open('vocab.json', 'w') as vocab_file:
+#     json.dump(vocab_dict, vocab_file)
 
 
 
 
 
-
-
-
-
-# checkpoint = "facebook/wav2vec2-base-960h"
-# tokenizer = Wav2Vec2CTCTokenizer.from_pretrained('./', unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
-# feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=True, return_attention_mask=True)
-# processor = Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer)
+checkpoint = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
+processor = Wav2Vec2Processor.from_pretrained(checkpoint)
 
 # filename = "test"
-# model = AutoModelForCTC.from_pretrained(checkpoint)
-# device = "cuda:0" if torch.cuda.is_available() else "cpu"
-# model.to(device)
+model = AutoModelForCTC.from_pretrained("wav2vec2-XLSR-ft-150", local_files_only=True)
+device = "cuda:0" if torch.cuda.is_available() else "cpu"
+model.to(device)
 
 
 # tokenizer.push_to_hub("wav2vec2-base-ft")

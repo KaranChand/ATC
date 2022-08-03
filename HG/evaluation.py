@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 # remove rows that have NaN as model_transcription for model evaluation
-files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 'transcribed_xlsr_test']
+files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 'transcribed_xlsr_ft_150_test', 'transcribed_xlsr_ft_50_test']
 # files = ['test']
 dirty_indices = set()
 for f in files:
@@ -37,7 +37,7 @@ for filename in files:
 
 
         metrics = {"filename" : filename+ '.csv',
-                   "perplexity" : results['mean_perplexity'],
+                   "gpt2_perplexity" : results['mean_perplexity'],
                    "wer" : wer,
                    "cer" : cer
                 }
