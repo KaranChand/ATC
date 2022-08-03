@@ -1,16 +1,98 @@
 from datasets import load_dataset, Audio, ClassLabel, Dataset, load_from_disk, DatasetDict
-from transformers import AutoModelForCTC, Wav2Vec2Processor, Wav2Vec2ForCTC, pipeline, HubertForCTC
+from transformers import AutoModelForCTC, Wav2Vec2Processor, Wav2Vec2ForCTC, pipeline
 import torch
 from jiwer import wer
 from pathlib import Path
 import random
 import pandas as pd
 import pickle
+from transformers import AutoModelForCTC, Wav2Vec2Processor, AutoProcessor, Wav2Vec2FeatureExtractor, Wav2Vec2CTCTokenizer
 
-from transformers import AutoModelForCTC, Wav2Vec2Processor, AutoProcessor
-from datasets import Audio, load_dataset, load_from_disk
-import torch
 import json
+
+from yaml import load
+
+# atcosim = load_from_disk("transcribed_xlsr.csv")
+# atcosim_clean = atcosim.train_test_split(train_size=0.9, seed=42)
+# atcosim_main = atcosim_clean['train'].train_test_split(train_size=0.89, seed=42)
+# atcosim_main["validation"] = atcosim_clean["test"]
+
+# atcosim = DatasetDict({
+#     'train': atcosim_main['train'],
+#     'test': atcosim_main['test'],
+#     'valid': atcosim_main['validation']})
+# print(atcosim)
+atcosim = load_from_disk("atcosim_pruned_xlsr")
+atcosim.push_to_hub("atcosim_pruned_xlsr", token = "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")
+
+
+
+
+
+
+
+
+
+# checkpoint = "facebook/wav2vec2-base-960h"
+# tokenizer = Wav2Vec2CTCTokenizer.from_pretrained('./', unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
+# feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=True, return_attention_mask=True)
+# processor = Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer)
+
+# filename = "test"
+# model = AutoModelForCTC.from_pretrained(checkpoint)
+# device = "cuda:0" if torch.cuda.is_available() else "cpu"
+# model.to(device)
+
+
+# tokenizer.push_to_hub("wav2vec2-base-ft")
+
+
+# # loading and preprocessing of data
+# atcosim = load_from_disk("wav2vec2-large-xlsr")
+# print(atcosim)
+# # atcosim = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
+# atcosim = load_dataset("KaranChand/atcosim_pruned", split = "test[:10]")
+# atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
+
+# def prepare_dataset(x):
+#   input_values = processor(x['audio']["array"], return_tensors="pt", padding=True, sampling_rate=x['audio']["sampling_rate"]).to(device).input_values
+#   x['input_values'] = input_values[0]
+#   with processor.as_target_processor():
+#         x["labels"] = processor(x["transcription"]).input_ids
+#   logits = model(input_values).logits
+#   pred_id = torch.argmax(logits, dim=-1)[0]
+#   x['model_transcription'] = processor.decode(pred_id)
+#   return x
+
+# atcosim = atcosim.map(prepare_dataset, remove_columns='audio')
+# # atcosim.save_to_disk(filename)
+# # pickle.dump(atcosim, open("output/"+filename+".p", "wb"))
+# atcosim = atcosim.remove_columns(['input_values'])
+# atcosim.to_csv("output/"+filename+".csv", index = False, header=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # torch.cuda.empty_cache()
 # # define pipeline
@@ -43,36 +125,38 @@ import json
 # atcosim = atcosim.remove_columns(['input_values', 'labels'])
 # atcosim.to_csv("output/"+filename+".csv", index = False, header=True)
 
-atcosim = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
-atcosim_clean = atcosim.train_test_split(train_size=0.9, seed=42)
-atcosim_main = atcosim_clean['train'].train_test_split(train_size=0.89, seed=42)
-atcosim_main["validation"] = atcosim_clean["test"]
+# atcosim = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
+# atcosim = load_from_disk("atcosim_base_pruned_input_split")
+# print(atcosim)
+# atcosim_clean = atcosim.train_test_split(train_size=0.9, seed=42)
+# atcosim_main = atcosim_clean['train'].train_test_split(train_size=0.89, seed=42)
+# atcosim_main["validation"] = atcosim_clean["test"]
 
-atcosim = DatasetDict({
-    'train': atcosim_main['train'],
-    'test': atcosim_main['test'],
-    'valid': atcosim_main['validation']})
-print(atcosim)
-atcosim.save_to_disk("atcosim_pruned")
+# atcosim = DatasetDict({
+#     'train': atcosim_main['train'],
+#     'test': atcosim_main['test'],
+#     'valid': atcosim_main['validation']})
+# print(atcosim)
+# atcosim.save_to_disk("atcosim_base_pruned_input_split")
 
-atcosim = load_from_disk("atcosim_pruned")['train']
+# atcosim = load_from_disk("atcosim_base_pruned_input_split")['train']
 
-# make a vocabulary
-def extract_all_chars(batch):
-  all_text = " ".join(batch["transcription"])
-  vocab = list(set(all_text))
-  return {"vocab": [vocab], "all_text": [all_text]}
+# # make a vocabulary
+# def extract_all_chars(batch):
+#   all_text = " ".join(batch["transcription"])
+#   vocab = list(set(all_text))
+#   return {"vocab": [vocab], "all_text": [all_text]}
 
 
-vocab = atcosim.map(extract_all_chars, batched=True, batch_size=-1, keep_in_memory=True, remove_columns=atcosim.column_names)
-vocab_list = list(set(vocab["vocab"][0]))
-vocab_dict = {v: k for k, v in enumerate(sorted(vocab_list))}
-vocab_dict["|"] = vocab_dict[" "]
-del vocab_dict[" "]
-vocab_dict["[UNK]"] = len(vocab_dict)
-vocab_dict["[PAD]"] = len(vocab_dict)
-with open('vocab.json', 'w') as vocab_file:
-    json.dump(vocab_dict, vocab_file)
+# vocab = atcosim.map(extract_all_chars, batched=True, batch_size=-1, keep_in_memory=True, remove_columns=atcosim.column_names)
+# vocab_list = list(set(vocab["vocab"][0]))
+# vocab_dict = {v: k for k, v in enumerate(sorted(vocab_list))}
+# vocab_dict["|"] = vocab_dict[" "]
+# del vocab_dict[" "]
+# vocab_dict["[UNK]"] = len(vocab_dict)
+# vocab_dict["[PAD]"] = len(vocab_dict)
+# with open('vocab.json', 'w') as vocab_file:
+#     json.dump(vocab_dict, vocab_file)
 
 
 

@@ -3,7 +3,8 @@ import pandas as pd
 from pathlib import Path
 
 # remove rows that have NaN as model_transcription for model evaluation
-files = ['transcribed_base', 'transcribed_robust', 'transcribed_hubert']
+files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 'transcribed_xlsr_test']
+# files = ['test']
 dirty_indices = set()
 for f in files:
         df = pd.read_csv("output/" + f+".csv")

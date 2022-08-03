@@ -1,5 +1,5 @@
 from datasets import load_dataset, Audio, ClassLabel, load_from_disk, load_metric
-from transformers import AutoModelForCTC, Wav2Vec2Processor, Wav2Vec2ForCTC, pipeline, HubertForCTC, TrainingArguments, Trainer
+from transformers import AutoModelForCTC, Wav2Vec2Processor, Wav2Vec2ForCTC, pipeline, HubertForCTC, TrainingArguments, Trainer, Wav2Vec2CTCTokenizer, Wav2Vec2FeatureExtractor
 import torch
 from jiwer import wer
 from pathlib import Path
@@ -12,15 +12,13 @@ from huggingface_hub import notebook_login
 
 torch.cuda.empty_cache()
 # define pipeline
-model = AutoModelForCTC.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
-processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-robust-ft-swbd-300h")
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
-model.to(device)
-print(device)
+tokenizer = Wav2Vec2CTCTokenizer.from_pretrained('./', unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
+feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=True, return_attention_mask=True)
+processor = Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer)
 
 #get data
-atcosim_input_train = load_dataset("KaranChand/atcosim_input", split="train[:50]")
-atcosim_input_validation = load_dataset("KaranChand/atcosim_input", split="valid[:50]")
+atcosim_input_train = load_dataset("KaranChand/atcosim_pruned_xlsr", split="train[:150]")
+atcosim_input_validation = load_dataset("KaranChand/atcosim_pruned_xlsr", split="valid[:50]")
 
 
 from dataclasses import dataclass, field
@@ -89,7 +87,7 @@ def compute_metrics(pred):
     return {"wer": wer}
 
 model = Wav2Vec2ForCTC.from_pretrained(
-    "facebook/wav2vec2-base-960h", 
+    "facebook/wav2vec2-xls-r-300m", 
     attention_dropout=0.0,
     hidden_dropout=0.0,
     feat_proj_dropout=0.0,
@@ -102,27 +100,26 @@ model = Wav2Vec2ForCTC.from_pretrained(
 
 model.freeze_feature_extractor()
 
-repo_name = "wav2vec2-base-960h-500"
+repo_name = "wav2vec2-XLSR-ft-150"
 
 training_args = TrainingArguments(
   output_dir=repo_name,
   group_by_length=True,
-  per_device_train_batch_size=4,
+  per_device_train_batch_size=6,
   gradient_accumulation_steps=2,
   evaluation_strategy="steps",
   num_train_epochs=50,
   gradient_checkpointing=True,
   fp16=True,
-  save_steps=150,
-  eval_steps=150,
-  logging_steps=150,
-  learning_rate=4e-3,
-  warmup_steps=150,
-  save_total_limit=2,
+  save_steps=500,
+  eval_steps=200,
+  logging_steps=200,
+  learning_rate=3e-4,
+  warmup_steps=200,
+  save_total_limit=1,
   push_to_hub=True,
   hub_token = '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'
 )
-
 
 trainer = Trainer(
     model=model,

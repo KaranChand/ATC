@@ -8,3 +8,6 @@ wav2vec2-large-robust-ft-test/
 wav2vec2-large-robust-ft-25-50e/
 wav2vec2-large-robust-ft-500/
 facebook/
+wav2vec2-XLSR-ft-150/
+atcosim_pruned_xlsr/
+transcribed_xlsr/
