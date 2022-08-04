@@ -10,9 +10,9 @@ torch.cuda.empty_cache()
 # checkpoint = "facebook/hubert-large-ls960-ft"
 checkpoint = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
 # model = AutoModelForCTC.from_pretrained(checkpoint)
-model = AutoModelForCTC.from_pretrained("wav2vec2-XLSR-ft-50", local_files_only=True)
+model = AutoModelForCTC.from_pretrained("models/wav2vec2-XLSR-ft-1000", local_files_only=True)
 processor = Wav2Vec2Processor.from_pretrained(checkpoint)
-filename = "transcribed_xlsr_ft_50_test"
+filename = "transcribed_xlsr_ft_1000_test"
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)

@@ -16,7 +16,7 @@ checkpoint = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
 processor = Wav2Vec2Processor.from_pretrained(checkpoint)
 
 #get data
-atcosim_input_train = load_dataset("KaranChand/atcosim_pruned_xlsr", split="train[:50]")
+atcosim_input_train = load_dataset("KaranChand/atcosim_pruned_xlsr", split="train[:1000]")
 atcosim_input_validation = load_dataset("KaranChand/atcosim_pruned_xlsr", split="valid[:50]")
 
 
@@ -99,20 +99,20 @@ model = Wav2Vec2ForCTC.from_pretrained(
 
 model.freeze_feature_extractor()
 
-repo_name = "wav2vec2-XLSR-ft-50"
+repo_name = "wav2vec2-XLSR-ft-1000"
 
 training_args = TrainingArguments(
   output_dir=repo_name,
   group_by_length=True,
-  per_device_train_batch_size=6,
+  per_device_train_batch_size=4,
   gradient_accumulation_steps=2,
   evaluation_strategy="steps",
   num_train_epochs=30,
   gradient_checkpointing=True,
   fp16=True,
-  save_steps=50,
+  save_steps=250,
   eval_steps=250,
-  logging_steps=50,
+  logging_steps=250,
   learning_rate=3e-4,
   warmup_steps=100,
   save_total_limit=1,

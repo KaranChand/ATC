@@ -3,8 +3,9 @@ import pandas as pd
 from pathlib import Path
 
 # remove rows that have NaN as model_transcription for model evaluation
-files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 'transcribed_xlsr_ft_150_test', 'transcribed_xlsr_ft_50_test']
-# files = ['test']
+files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 
+'transcribed_xlsr_ft_500_test', 'transcribed_xlsr_ft_1000_test',
+'transcribed_xlsr_ft_150_test', 'transcribed_xlsr_ft_50_test', 'transcribed_xlsr_ft_10_test']
 dirty_indices = set()
 for f in files:
         df = pd.read_csv("output/" + f+".csv")
@@ -37,14 +38,14 @@ for filename in files:
 
 
         metrics = {"filename" : filename+ '.csv',
-                   "gpt2_perplexity" : results['mean_perplexity'],
+                   "perplexity" : results['mean_perplexity'],
                    "wer" : wer,
                    "cer" : cer
                 }
         print(metrics)
 
-        df = pd.read_csv("output/metrics.csv")
+        df = pd.read_csv("metrics.csv")
         df.set_index('filename', inplace= True)
         df.loc[filename + '.csv'] = metrics
         df.reset_index(inplace=True)
-        df.to_csv(Path("output/metrics.csv"), index = False, header=True, float_format='%.5f')
+        df.to_csv(Path("metrics.csv"), index = False, header=True, float_format='%.5f')
