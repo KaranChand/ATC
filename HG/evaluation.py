@@ -1,4 +1,4 @@
-from datasets import load_dataset, load_metric
+from datasets import load_dataset, load_metric, Dataset
 import pandas as pd 
 from pathlib import Path
 
@@ -6,11 +6,25 @@ from pathlib import Path
 files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 
 'transcribed_xlsr_ft_500_test', 'transcribed_xlsr_ft_1000_test',
 'transcribed_xlsr_ft_150_test', 'transcribed_xlsr_ft_50_test', 'transcribed_xlsr_ft_10_test']
+
+# compute indices of rows that contain NaN
 dirty_indices = set()
 for f in files:
         df = pd.read_csv("output/" + f+".csv")
         dirty_indices.update(df.loc[pd.isna(df["model_transcription"]), :].index.values)
 
+
+# evaluate dataset
+ # perplexity
+# ds = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
+# references = ds['transcription']
+
+# perplexity = load_metric("perplexity", module_type="metric")
+# mean_perplexity = perplexity.compute(model_id='gpt2', input_texts=references)['mean_perplexity']
+
+
+
+# evaluate transcriptions
 for filename in files:
         df = pd.read_csv("output/" + filename+".csv") 
         clean_df = df.drop(dirty_indices)
@@ -26,26 +40,18 @@ for filename in files:
         wer_metric = load_metric("wer")
         wer = wer_metric.compute(predictions=predictions, references=references)
 
-        # perplexity
-        perplexity = load_metric("perplexity", module_type="metric")
-        input_texts = references
-        results = perplexity.compute(model_id='gpt2',
-                                     input_texts=input_texts)
-
         # Character error rate
         cer_metric = load_metric("cer")
         cer = cer_metric.compute(predictions=predictions, references=references)
 
-
         metrics = {"filename" : filename+ '.csv',
-                   "perplexity" : results['mean_perplexity'],
                    "wer" : wer,
                    "cer" : cer
                 }
         print(metrics)
 
-        df = pd.read_csv("metrics.csv")
+        df = pd.read_csv("transcribed_metrics.csv")
         df.set_index('filename', inplace= True)
         df.loc[filename + '.csv'] = metrics
         df.reset_index(inplace=True)
-        df.to_csv(Path("metrics.csv"), index = False, header=True, float_format='%.5f')
+        df.to_csv(Path("transcribed_metrics.csv"), index = False, header=True, float_format='%.5f')
