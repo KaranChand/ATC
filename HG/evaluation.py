@@ -6,8 +6,8 @@ import csv
 
 # remove rows that have NaN as model_transcription for model evaluation
 files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 
-'transcribed_xlsr_ft_500_test', 'transcribed_xlsr_ft_1000_test',
-'transcribed_xlsr_ft_150_test', 'transcribed_xlsr_ft_50_test', 'transcribed_xlsr_ft_10_test']
+'transcribed_xlsr_ft_10_test', 'transcribed_xlsr_ft_50_test','transcribed_xlsr_ft_150_test',
+'transcribed_xlsr_ft_500_test', 'transcribed_xlsr_ft_1000_test', "transcribed_xlsr_ft_1000_ARPA"]
 
 # compute indices of rows that contain NaN
 dirty_indices = set()

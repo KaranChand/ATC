@@ -1,7 +1,6 @@
 from transformers import AutoModelForCTC, Wav2Vec2Processor, AutoProcessor, Wav2Vec2ProcessorWithLM
 from datasets import Audio, load_dataset, load_from_disk
 import torch
-
 processor = Wav2Vec2ProcessorWithLM.from_pretrained("KaranChand/ATC_arpa")
 
 model = AutoModelForCTC.from_pretrained("models/wav2vec2-XLSR-ft-1000", local_files_only=True)
