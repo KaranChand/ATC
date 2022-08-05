@@ -12,12 +12,12 @@ from huggingface_hub import notebook_login
 
 torch.cuda.empty_cache()
 # define pipeline
-checkpoint = "facebook/hubert-large-ls960-ft"
+checkpoint = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
 processor = Wav2Vec2Processor.from_pretrained(checkpoint)
 
 #get data
-atcosim_input_train = load_dataset("KaranChand/atcosim_pruned_hubert", split="train[:100]")
-atcosim_input_validation = load_dataset("KaranChand/atcosim_pruned_hubert", split="valid[:50]")
+atcosim_input_train = load_dataset("KaranChand/atcosim_pruned_xlsr", split="train[:100]")
+atcosim_input_validation = load_dataset("KaranChand/atcosim_pruned_xlsr", split="valid[:50]")
 
 
 from dataclasses import dataclass, field
@@ -99,7 +99,7 @@ model = HubertForCTC.from_pretrained(
 
 model.freeze_feature_extractor()
 
-repo_name = "wav2vec2-hubert-ft-100"
+repo_name = "wav2vec2-XLSR-ft-1000"
 
 training_args = TrainingArguments(
   output_dir=repo_name,

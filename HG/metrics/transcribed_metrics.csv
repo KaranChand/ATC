@@ -2,9 +2,9 @@ filename,wer,cer
 transcribed_base_test.csv,0.71083,0.31638
 transcribed_robust_test.csv,0.59217,0.26708
 transcribed_hubert_test.csv,0.51313,0.21518
-transcribed_xlsr_test.csv,0.66610,0.26167
-transcribed_xlsr_ft_10_test.csv,0.43076,0.17470
-transcribed_xlsr_ft_50_test.csv,0.26016,0.09530
+transcribed_xlsr_test.csv,0.6661,0.26167
+transcribed_xlsr_ft_10_test.csv,0.43076,0.1747
+transcribed_xlsr_ft_50_test.csv,0.26016,0.0953
 transcribed_xlsr_ft_150_test.csv,0.16975,0.05799
 transcribed_xlsr_ft_500_test.csv,0.08321,0.02625
 transcribed_xlsr_ft_1000_test.csv,0.04644,0.01541

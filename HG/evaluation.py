@@ -1,6 +1,8 @@
 from datasets import load_dataset, load_metric, Dataset
 import pandas as pd 
 from pathlib import Path
+import evaluate
+import csv
 
 # remove rows that have NaN as model_transcription for model evaluation
 files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 
@@ -13,16 +15,21 @@ for f in files:
         df = pd.read_csv("output/" + f+".csv")
         dirty_indices.update(df.loc[pd.isna(df["model_transcription"]), :].index.values)
 
-
 # evaluate dataset
- # perplexity
-# ds = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
-# references = ds['transcription']
+ds = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
+references = ds['transcription']
 
-# perplexity = load_metric("perplexity", module_type="metric")
-# mean_perplexity = perplexity.compute(model_id='gpt2', input_texts=references)['mean_perplexity']
+# perplexity
+perplexity_metric = load_metric("perplexity", module_type="metric")
+perplexity = perplexity_metric.compute(model_id='gpt2', input_texts=references)['mean_perplexity']
 
-
+metrics = {"filename" : 'Atcosim',
+                   "perplexity" : perplexity
+                }
+with open('metrics/data_metrics.csv', 'w') as f:  
+    w = csv.DictWriter(f, metrics.keys())
+    w.writeheader()
+    w.writerow(metrics)
 
 # evaluate transcriptions
 for filename in files:
@@ -43,15 +50,14 @@ for filename in files:
         # Character error rate
         cer_metric = load_metric("cer")
         cer = cer_metric.compute(predictions=predictions, references=references)
-
+            
         metrics = {"filename" : filename+ '.csv',
                    "wer" : wer,
                    "cer" : cer
                 }
-        print(metrics)
 
-        df = pd.read_csv("transcribed_metrics.csv")
+        df = pd.read_csv("metrics/transcribed_metrics.csv")
         df.set_index('filename', inplace= True)
         df.loc[filename + '.csv'] = metrics
         df.reset_index(inplace=True)
-        df.to_csv(Path("transcribed_metrics.csv"), index = False, header=True, float_format='%.5f')
+        df.to_csv(Path("metrics/transcribed_metrics.csv"), index = False, header=True, float_format='%.5f')

@@ -6,58 +6,47 @@ from pathlib import Path
 import random
 import pandas as pd
 import pickle
-from transformers import AutoModelForCTC, Wav2Vec2Processor, AutoProcessor, Wav2Vec2FeatureExtractor, Wav2Vec2CTCTokenizer
+from transformers import AutoModelForCTC, Wav2Vec2Processor, AutoProcessor, Wav2Vec2FeatureExtractor, Wav2Vec2CTCTokenizer, HubertForCTC
 
 import json
 
 from yaml import load
 
 
-# torch.cuda.empty_cache()
-# # define pipeline
-# # checkpoint = "facebook/wav2vec2-base-960h"
-# # checkpoint = "facebook/wav2vec2-large-robust-ft-swbd-300h"
+torch.cuda.empty_cache()
+# define pipeline
+# checkpoint = "facebook/wav2vec2-base-960h"
+# checkpoint = "facebook/wav2vec2-large-robust-ft-swbd-300h"
 # checkpoint = "facebook/hubert-large-ls960-ft"
-# # checkpoint = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
-# # model = AutoModelForCTC.from_pretrained(checkpoint)
-# model = AutoModelForCTC.from_pretrained(checkpoint, local_files_only=True)
-# processor = Wav2Vec2Processor.from_pretrained(checkpoint)
-# filename = "atcosim_pruned_hubert"
+# checkpoint = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
+# model = AutoModelForCTC.from_pretrained(checkpoint)
+model = HubertForCTC.from_pretrained("wav2vec2-hubert-ft-100", local_files_only=True)
+processor = Wav2Vec2Processor.from_pretrained("facebook/hubert-large-ls960-ft")
+filename = "transcribed_hubert_ft_100_test"
 
-# device = "cuda:0" if torch.cuda.is_available() else "cpu"
-# model.to(device)
+device = "cuda:0" if torch.cuda.is_available() else "cpu"
+model.to(device)
 
-# # loading and preprocessing of data
-# # atcosim = load_from_disk("atcosim_split")['validation']                             # when arrow dataset is loaded on disk, not online or csv
+# loading and preprocessing of data
+# atcosim = load_from_disk("atcosim_split")['validation']                             # when arrow dataset is loaded on disk, not online or csv
 # atcosim = load_dataset('csv', data_files='data/pruneddata.csv', split='train')      # for making a full dataset with input values
-# # atcosim = load_dataset("KaranChand/atcosim_pruned", split = "test")                   # for transcribing and comparing on test cases
-# atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
+atcosim = load_dataset("KaranChand/atcosim_pruned", split = "test")                   # for transcribing and comparing on test cases
+atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
 
-# def prepare_dataset(x):
-#   input_values = processor(x['audio']["array"], return_tensors="pt", padding=True, sampling_rate=x['audio']["sampling_rate"]).to(device).input_values
-#   x['input_values'] = input_values[0]
-#   with processor.as_target_processor():
-#         x["labels"] = processor(x["transcription"]).input_ids
-#   logits = model(input_values).logits
-#   pred_id = torch.argmax(logits, dim=-1)[0]
-#   x['model_transcription'] = processor.decode(pred_id)
-#   return x
+def prepare_dataset(x):
+  input_values = processor(x['audio']["array"], return_tensors="pt", padding=True, sampling_rate=x['audio']["sampling_rate"]).to(device).input_values
+  x['input_values'] = input_values[0]
+  with processor.as_target_processor():
+        x["labels"] = processor(x["transcription"]).input_ids
+  logits = model(input_values).logits
+  pred_id = torch.argmax(logits, dim=-1)[0]
+  x['model_transcription'] = processor.decode(pred_id)
+  return x
 
-# atcosim = atcosim.map(prepare_dataset, remove_columns='audio')
-# atcosim.save_to_disk(filename)
+atcosim = atcosim.map(prepare_dataset, remove_columns='audio')
+atcosim = atcosim.remove_columns(['input_values'])
+atcosim.to_csv("output/"+filename+".csv", index = False, header=True)
 
-# atcosim = load_from_disk("atcosim_pruned_hubert")
-# print(atcosim)
-# atcosim_clean = atcosim.train_test_split(train_size=0.9, seed=42)
-# atcosim_main = atcosim_clean['train'].train_test_split(train_size=0.89, seed=42)
-# atcosim_main["validation"] = atcosim_clean["test"]
-
-# atcosim = DatasetDict({
-#     'train': atcosim_main['train'],
-#     'test': atcosim_main['test'],
-#     'valid': atcosim_main['validation']})
-# print(atcosim)
-# atcosim.save_to_disk("atcosim_pruned_hubert")
 
 
 
