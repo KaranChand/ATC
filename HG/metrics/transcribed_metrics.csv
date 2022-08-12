@@ -13,3 +13,8 @@ transcribed_xlsr_ft_10_ARPA.csv,0.28765,0.13681
 transcribed_xlsr_ft_50_ARPA.csv,0.14198,0.06653
 transcribed_xlsr_ft_150_ARPA.csv,0.11685,0.04786
 transcribed_xlsr_ft_500_ARPA.csv,0.05366,0.02093
+transcribed_xlsr_ft_1000_ARPA_train.csv,0.03132,0.01297
+transcribed_xlsr_ft_10_ARPA_train.csv,0.29113,0.13813
+transcribed_xlsr_ft_50_ARPA_train.csv,0.14505,0.06766
+transcribed_xlsr_ft_150_ARPA_train.csv,0.11837,0.04806
+transcribed_xlsr_ft_500_ARPA_train.csv,0.05593,0.02153

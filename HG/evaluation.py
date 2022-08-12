@@ -8,10 +8,11 @@ import csv
 files = ['transcribed_base_test', 'transcribed_robust_test', 'transcribed_hubert_test', 
 'transcribed_xlsr_ft_10_test', 'transcribed_xlsr_ft_50_test','transcribed_xlsr_ft_150_test',
 'transcribed_xlsr_ft_500_test', 'transcribed_xlsr_ft_1000_test', "transcribed_xlsr_ft_10_ARPA",
-"transcribed_xlsr_ft_50_ARPA", "transcribed_xlsr_ft_150_ARPA", "transcribed_xlsr_ft_5000_ARPA"
-, "transcribed_xlsr_ft_1000_ARPA"]
+"transcribed_xlsr_ft_50_ARPA", "transcribed_xlsr_ft_150_ARPA", "transcribed_xlsr_ft_5000_ARPA", 
+"transcribed_xlsr_ft_1000_ARPA", "transcribed_xlsr_ft_1000_ARPA_train", "transcribed_xlsr_ft_10_ARPA_train",
+"transcribed_xlsr_ft_50_ARPA_train", "transcribed_xlsr_ft_150_ARPA_train", "transcribed_xlsr_ft_500_ARPA_train"]
 
-files = ["transcribed_xlsr_ft_500_ARPA"]
+files = ["transcribed_xlsr_ft_500_ARPA_train"]
 # compute indices of rows that contain NaN
 dirty_indices = set()
 for f in files:
