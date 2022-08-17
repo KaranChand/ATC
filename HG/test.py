@@ -13,10 +13,10 @@ import json
 from yaml import load
 
 # ARPA ERROR COMPUTATION
-df = pd.read_csv("output/transcribed_xlsr_ft_1000_ARPA.csv")
-df["transcription"] = df["transcription"].str[:-1]
-df_error = df[df['transcription'] != df['model_transcription']]
-df_error.to_csv("output/ARPA_errors.csv", index = False, header=True)
+# df = pd.read_csv("output/transcribed_xlsr_ft_1000_ARPA.csv")
+# df["transcription"] = df["transcription"].str[:-1]
+# df_error = df[df['transcription'] != df['model_transcription']]
+# df_error.to_csv("output/ARPA_errors.csv", index = False, header=True)
 # --------------------------------------------------------------------
 
 
