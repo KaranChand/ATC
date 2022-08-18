@@ -12,6 +12,19 @@ import json
 
 from yaml import load
 
+
+
+atcosim = load_dataset("KaranChand/atcosim_pruned") 
+print(atcosim)
+
+
+
+
+
+
+
+
+
 # ARPA ERROR COMPUTATION
 # df = pd.read_csv("output/transcribed_xlsr_ft_1000_ARPA.csv")
 # df["transcription"] = df["transcription"].str[:-1]
