@@ -85,7 +85,7 @@ def compute_metrics(pred):
 
     return {"wer": wer}
 
-model = HubertForCTC.from_pretrained(
+model = Wav2Vec2ForCTC.from_pretrained(
     checkpoint, 
     attention_dropout=0.0,
     hidden_dropout=0.0,
