@@ -7,16 +7,21 @@ import random
 import pandas as pd
 import pickle
 from transformers import AutoModelForCTC, Wav2Vec2Processor, AutoProcessor, Wav2Vec2FeatureExtractor, Wav2Vec2CTCTokenizer, HubertForCTC
-
+import numpy as np
 import json
 
 from yaml import load
 
 
+# atcosim = load_dataset("KaranChand/atcosim_pruned") 
+# print(atcosim)
 
-atcosim = load_dataset("KaranChand/atcosim_pruned") 
-print(atcosim)
-
+df = pd.read_csv("output/ARPA_errors.csv")
+differences = np.array([]) 
+for index, row in df.iterrows():
+    differences = np.append(differences, set(row["transcription"].split()).difference(set(row["model_transcription"].split())))
+df['difference'] = differences
+df.to_csv("output/ARPA_errors.csv", index = False, header=True)
 
 
 
