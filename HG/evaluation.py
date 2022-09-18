@@ -19,21 +19,21 @@ for f in files:
         df = pd.read_csv("output/" + f+".csv")
         dirty_indices.update(df.loc[pd.isna(df["model_transcription"]), :].index.values)
 
-# # evaluate dataset
-# ds = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
-# references = ds['transcription']
+# evaluate dataset
+ds = load_dataset('csv', data_files='data/pruneddata.csv', split='train')
+references = ds['transcription']
 
-# # perplexity
-# perplexity_metric = load_metric("perplexity", module_type="metric")
-# perplexity = perplexity_metric.compute(model_id='gpt2', input_texts=references)['mean_perplexity']
+# perplexity
+perplexity_metric = load_metric("perplexity", module_type="metric")
+perplexity = perplexity_metric.compute(model_id='gpt2', input_texts=references)['mean_perplexity']
 
-# metrics = {"filename" : 'Atcosim',
-#                    "perplexity" : perplexity
-#                 }
-# with open('metrics/data_metrics.csv', 'w') as f:  
-#     w = csv.DictWriter(f, metrics.keys())
-#     w.writeheader()
-#     w.writerow(metrics)
+metrics = {"filename" : 'Atcosim',
+                   "perplexity" : perplexity
+                }
+with open('metrics/data_metrics.csv', 'w') as f:  
+    w = csv.DictWriter(f, metrics.keys())
+    w.writeheader()
+    w.writerow(metrics)
 
 # evaluate transcriptions
 for filename in files:

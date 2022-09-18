@@ -3,9 +3,9 @@ from datasets import Audio, load_dataset, load_from_disk
 import torch
 processor = Wav2Vec2ProcessorWithLM.from_pretrained("KaranChand/ATC_arpa")
 
+# define model that will be used
 model = AutoModelForCTC.from_pretrained("models/wav2vec2-XLSR-ft-10", local_files_only=True)
 filename = "transcribed_xlsr_ft_10_ARPA"
-
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
@@ -15,6 +15,7 @@ model.to(device)
 atcosim = load_dataset("KaranChand/atcosim_pruned", split = "test")                   # for transcribing and comparing on test cases
 atcosim = atcosim.cast_column("audio", Audio(sampling_rate=16000))
 
+# transcribe the data
 def prepare_dataset(x):
   input_values = processor(x['audio']["array"], return_tensors="pt", padding=True, sampling_rate=x['audio']["sampling_rate"]).to(device).input_values
   x['input_values'] = input_values[0]
@@ -25,6 +26,7 @@ def prepare_dataset(x):
   x['model_transcription'] = processor.decode(pred_id)
   return x
 
+# output the results
 atcosim = atcosim.map(prepare_dataset, remove_columns='audio')
 atcosim = atcosim.remove_columns(['input_values'])
 atcosim.to_csv("output/"+filename+".csv", index = False, header=True)

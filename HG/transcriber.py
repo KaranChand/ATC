@@ -33,6 +33,7 @@ def prepare_dataset(x):
   x['model_transcription'] = processor.decode(pred_id)
   return x
 
+# choose how to save
 atcosim = atcosim.map(prepare_dataset, remove_columns='audio')
 # atcosim.save_to_disk(filename)
 # pickle.dump(atcosim, open("output/"+filename+".p", "wb"))
